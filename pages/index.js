@@ -10,37 +10,22 @@ import Head from "next/head";
 import abi from "../utils/BeerPortal.json";
 
 export default function Home() {
-  /**
-   * Create a variable here that holds the contract address after you deploy!
-   */
   const contractAddress = "0xC4801414F58312DD0b5dBDDe68427c7d73d3Dfb0";
 
-  /**
-   * Create a variable here that references the abi content!
-   */
   const contractABI = abi.abi;
 
-  /*
-   * Just a state variable we use to store our user's public wallet.
-   */
   const [currentAccount, setCurrentAccount] = useState("");
 
   const [message, setMessage] = useState("");
 
   const [name, setName] = useState("");
 
-  /*
-   * All state property to store the beer data.
-   */
   const [allBeer, setAllBeer] = useState([]);
 
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
 
-      /*
-       * Check if we're authorized to access the user's wallet
-       */
       const accounts = await ethereum.request({ method: "eth_accounts" });
 
       if (accounts.length !== 0) {
@@ -56,7 +41,7 @@ export default function Home() {
           progress: undefined,
         });
       } else {
-        toast.warn("Make sure you have MetaMask Connected", {
+        toast.warn("Make sure your MetaMask Connected", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -79,15 +64,12 @@ export default function Home() {
     }
   };
 
-  /**
-   * Implement your connectWallet method here
-   */
   const connectWallet = async () => {
     try {
       const { ethereum } = window;
 
       if (!ethereum) {
-        toast.warn("Make sure you have MetaMask Connected", {
+        toast.warn("Make sure your MetaMask Connected", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -124,13 +106,10 @@ export default function Home() {
         let count = await beerPortalContract.getTotalBeer();
         console.log("Retrieved total beer count...", count.toNumber());
 
-        /*
-         * Execute the actual beer gift from your smart contract
-         */
         const beerTxn = await beerPortalContract.buyBeer(
           message ? message : "Enjoy Your Beer",
           name ? name : "Anonymous",
-          ethers.utils.parseEther("0.001"),
+          ethers.utils.parseEther("0.001"), //before changing this value you must change the value in the Smart contract
           {
             gasLimit: 300000,
           }
@@ -182,9 +161,6 @@ export default function Home() {
     }
   };
 
-  /*
-   * Create a method that gets all beer from your contract
-   */
   const getAllBeer = async () => {
     try {
       const { ethereum } = window;
@@ -196,16 +172,8 @@ export default function Home() {
           contractABI,
           signer
         );
-
-        /*
-         * Call the getAllBeer method from your Smart Contract
-         */
         const beers = await beerPortalContract.getAllBeer();
 
-        /*
-         * We only need address, timestamp, name, and message in our UI so let's
-         * pick those out
-         */
         const beerCleaned = beers.map((beer) => {
           return {
             address: beer.giver,
@@ -215,9 +183,6 @@ export default function Home() {
           };
         });
 
-        /*
-         * Store our data in React State
-         */
         setAllBeer(beerCleaned);
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -227,9 +192,6 @@ export default function Home() {
     }
   };
 
-  /*
-   * This runs our function when the page loads.
-   */
   useEffect(() => {
     let beerPortalContract;
     getAllBeer();
@@ -359,13 +321,13 @@ export default function Home() {
           return (
             <div className="border-l-2 mt-10" key={index}>
               <div className="transform transition cursor-pointer hover:-translate-y-2 ml-10 relative flex items-center px-6 py-4 bg-yellow-500 text-black rounded mb-10 flex-col md:flex-row space-y-4 md:space-y-0">
-                {/* <!-- Dot Following the Left Vertical Line --> */}
+                {/* <!-- The dot next to the box --> */}
                 <div className="w-5 h-5 bg-yellow-500 absolute -left-10 transform -translate-x-2/4 rounded-full z-10 mt-2 md:mt-0"></div>
 
-                {/* <!-- Line that connecting the box with the vertical line --> */}
+                {/* <!-- Line connecting to the box --> */}
                 <div className="w-10 h-1 bg-green-300 absolute -left-10 z-0"></div>
 
-                {/* <!-- Content that showing in the box --> */}
+                {/* <!-- Box Content --> */}
                 <div className="flex-auto">
                   <h1 className="text-md">Supporter: {beer.name}</h1>
                   <h1 className="text-md">Message: {beer.message}</h1>
