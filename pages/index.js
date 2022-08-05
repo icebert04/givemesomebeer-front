@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { ethers } from "ethers";
 import "react-toastify/dist/ReactToastify.css";
 
-import Beer from "../images/beer.png"
+import Beer from "./images/beer.png";
 
 import Image from "next/image"
 import Head from "next/head";
